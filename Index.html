@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Business Search</title>
+    <style>
+        :root {
+            --color-white: rgba(255, 255, 255, 1);
+            --color-black: rgba(0, 0, 0, 1);
+            --color-cream-50: rgba(252, 252, 249, 1);
+            --color-gray-200: rgba(245, 245, 245, 1);
+            --color-gray-300: rgba(167, 169, 169, 1);
+            --color-gray-400: rgba(119, 124, 124, 1);
+            --color-slate-500: rgba(98, 108, 113, 1);
+            --color-teal-500: rgba(33, 128, 141, 1);
+            --color-teal-600: rgba(29, 116, 128, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            background: var(--color-white);
+            color: #202124;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            padding: 18px 25px;
+            border-bottom: 1px solid #ebebeb;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            margin-right: 30px;
+        }
+
+        .logo-text {
+            font-size: 22px;
+            font-weight: 400;
+            color: #4285f4;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-text .g { color: #4285f4; }
+        .logo-text .o1 { color: #ea4335; }
+        .logo-text .o2 { color: #fbbc04; }
+        .logo-text .g2 { color: #4285f4; }
+        .logo-text .l { color: #34a853; }
+        .logo-text .e { color: #ea4335; }
+
+        .search-container {
+            flex: 1;
+            max-width: 690px;
+            position: relative;
+        }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            border: 1px solid #dfe1e5;
+            border-radius: 24px;
+            padding: 10px 14px;
+            background: var(--color-white);
+            box-shadow: 0 1px 6px rgba(32, 33, 36, 0.08);
+        }
+
+        .search-box:hover {
+            box-shadow: 0 1px 6px rgba(32, 33, 36, 0.15);
+        }
+
+        .search-icon {
+            width: 20px;
+            height: 20px;
+            margin-right: 12px;
+            fill: #9aa0a6;
+        }
+
+        .search-input {
+            flex: 1;
+            border: none;
+            outline: none;
+            font-size: 16px;
+            color: #202124;
+            background: transparent;
+        }
+
+        .clear-btn {
+            cursor: pointer;
+            padding: 4px;
+            display: none;
+            margin-right: 8px;
+        }
+
+        .clear-btn.visible {
+            display: block;
+        }
+
+        .search-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 4px 8px;
+        }
+
+        .nav-tabs {
+            padding: 0 25px;
+            display: flex;
+            gap: 30px;
+            border-bottom: 1px solid #ebebeb;
+        }
+
+        .nav-tab {
+            padding: 12px 8px;
+            color: #5f6368;
+            text-decoration: none;
+            font-size: 13px;
+            border-bottom: 3px solid transparent;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-tab.active {
+            color: #4285f4;
+            border-bottom-color: #4285f4;
+        }
+
+        .results-container {
+            max-width: 652px;
+            margin: 0 auto;
+            padding: 20px 25px;
+        }
+
+        .no-results {
+            padding: 40px 0;
+        }
+
+        .no-results-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            background: #fbf0e6;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .magnifier {
+            font-size: 40px;
+            color: #9aa0a6;
+        }
+
+        .no-results h2 {
+            font-size: 20px;
+            font-weight: 400;
+            color: #202124;
+            margin-bottom: 8px;
+        }
+
+        .no-results p {
+            font-size: 14px;
+            color: #70757a;
+            margin-bottom: 20px;
+        }
+
+        .suggestions {
+            margin-top: 20px;
+        }
+
+        .suggestions h3 {
+            font-size: 16px;
+            font-weight: 400;
+            color: #202124;
+            margin-bottom: 12px;
+        }
+
+        .suggestion-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 0;
+            color: #4285f4;
+            text-decoration: none;
+            font-size: 14px;
+            gap: 12px;
+        }
+
+        .suggestion-item:hover {
+            text-decoration: underline;
+        }
+
+        .search-result {
+            margin-bottom: 32px;
+        }
+
+        .result-url {
+            display: flex;
+            align-items: center;
+            margin-bottom: 3px;
+            gap: 8px;
+        }
+
+        .result-url img {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+        }
+
+        .result-url-text {
+            font-size: 14px;
+            color: #202124;
+            line-height: 1.3;
+        }
+
+        .result-title {
+            font-size: 20px;
+            color: #1a0dab;
+            text-decoration: none;
+            line-height: 1.3;
+            display: block;
+            margin-bottom: 3px;
+        }
+
+        .result-title:hover {
+            text-decoration: underline;
+        }
+
+        .result-title:visited {
+            color: #681da8;
+        }
+
+        .result-snippet {
+            font-size: 14px;
+            color: #4d5156;
+            line-height: 1.58;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #70757a;
+        }
+
+        .spell-check {
+            font-size: 16px;
+            color: #70757a;
+            margin-bottom: 20px;
+        }
+
+        .spell-check a {
+            color: #1a0dab;
+            text-decoration: none;
+        }
+
+        .spell-check a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 15px;
+            }
+
+            .search-container {
+                max-width: 100%;
+            }
+
+            .results-container {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">
+            <span class="logo-text">
+                <span class="g">G</span><span class="o1">o</span><span class="o2">o</span><span class="g2">g</span><span class="l">l</span><span class="e">e</span>
+            </span>
+        </div>
+        <div class="search-container">
+            <div class="search-box">
+                <svg class="search-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"></path>
+                </svg>
+                <input type="text" class="search-input" id="searchInput" placeholder="Search companies..." autocomplete="off">
+                <button class="clear-btn" id="clearBtn">
+                    <svg focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20">
+                        <path fill="#70757a" d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path>
+                    </svg>
+                </button>
+                <button class="search-btn" id="searchBtn">
+                    <svg focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                        <path fill="#4285f4" d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="nav-tabs">
+        <a href="#" class="nav-tab active">
+            <svg focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16">
+                <path fill="currentColor" d="M10 2v2a6 6 0 0 1 6 6h2a8 8 0 0 0-8-8z"></path>
+                <path fill="currentColor" d="M10 4V2a8 8 0 0 0-8 8h2c0-3.3 2.7-6 6-6z"></path>
+                <path fill="currentColor" d="M4 10H2a8 8 0 0 0 8 8v-2c-3.3 0-6-2.69-6-6z"></path>
+                <path fill="currentColor" d="M22 20.59l-5.69-5.69A7.96 7.96 0 0 0 18 10h-2a6 6 0 0 1-6 6v2c1.85 0 3.52-.64 4.88-1.68l5.69 5.69L22 20.59z"></path>
+            </svg>
+            All
+        </a>
+        <a href="#" class="nav-tab">
+            <svg focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16">
+                <path fill="currentColor" d="M21.58 7.19c-.23-.86-.91-1.54-1.77-1.77C18.25 5 12 5 12 5s-6.25 0-7.81.42c-.86.23-1.54.91-1.77 1.77C2 8.75 2 12 2 12s0 3.25.42 4.81c.23.86.91 1.54 1.77 1.77C5.75 19 12 19 12 19s6.25 0 7.81-.42c.86-.23 1.54-.91 1.77-1.77C22 15.25 22 12 22 12s0-3.25-.42-4.81zM10 15V9l5.2 3-5.2 3z"></path>
+            </svg>
+            Videos
+        </a>
+        <a href="#" class="nav-tab">
+            <svg focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16">
+                <path fill="currentColor" d="M14 13l4 5H6l4-4 1.79 1.78L14 13zm-6.01-2.99A2 2 0 0 0 8 6a2 2 0 0 0-.01 4.01zM22 5v14a3 3 0 0 1-3 2.99H5c-1.64 0-3-1.36-3-3V5c0-1.64 1.36-3 3-3h14c1.65 0 3 1.36 3 3zm-2.01 0a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h7v-.01h7a1 1 0 0 0 1-1V5z"></path>
+            </svg>
+            Images
+        </a>
+        <a href="#" class="nav-tab">
+            <svg focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16">
+                <path fill="currentColor" d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 0 1 0-5 2.5 2.5 0 0 1 0 5z"></path>
+            </svg>
+            Maps
+        </a>
+    </div>
+
+    <div class="results-container" id="resultsContainer">
+        <div class="loading">Enter a company name to search...</div>
+    </div>
+
+    <script>
+        const API_URL = 'https://search-engine-sim-backend.onrender.com';
+        
+        const searchInput = document.getElementById('searchInput');
+        const clearBtn = document.getElementById('clearBtn');
+        const searchBtn = document.getElementById('searchBtn');
+        const resultsContainer = document.getElementById('resultsContainer');
+
+        let searchTimeout;
+
+        searchInput.addEventListener('input', (e) => {
+            const value = e.target.value;
+            clearBtn.classList.toggle('visible', value.length > 0);
+            
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                if (value.length > 0) {
+                    performSearch(value);
+                } else {
+                    resultsContainer.innerHTML = '<div class="loading">Enter a company name to search...</div>';
+                }
+            }, 300);
+        });
+
+        clearBtn.addEventListener('click', () => {
+            searchInput.value = '';
+            clearBtn.classList.remove('visible');
+            resultsContainer.innerHTML = '<div class="loading">Enter a company name to search...</div>';
+            searchInput.focus();
+        });
+
+        searchBtn.addEventListener('click', () => {
+            if (searchInput.value.length > 0) {
+                performSearch(searchInput.value);
+            }
+        });
+
+        searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && searchInput.value.length > 0) {
+                performSearch(searchInput.value);
+            }
+        });
+
+        async function performSearch(query) {
+            resultsContainer.innerHTML = '<div class="loading">Searching...</div>';
+
+            try {
+                const response = await fetch(`${API_URL}/api/search?q=${encodeURIComponent(query)}`);
+                const data = await response.json();
+
+                if (data.results && data.results.length > 0) {
+                    displayResults(data.results, query);
+                } else {
+                    displayNoResults(query);
+                }
+            } catch (error) {
+                console.error('Search error:', error);
+                resultsContainer.innerHTML = '<div class="loading">An error occurred. Please try again.</div>';
+            }
+        }
+
+        function displayResults(results, query) {
+            let html = '';
+            
+            results.forEach(result => {
+                const domain = extractDomain(result.website);
+                const favicon = `https://www.google.com/s2/favicons?domain=${domain}&sz=32`;
+                
+                html += `
+                    <div class="search-result">
+                        <div class="result-url">
+                            <img src="${favicon}" alt="" onerror="this.style.display='none'">
+                            <span class="result-url-text">${domain}</span>
+                        </div>
+                        <a href="${result.website}" class="result-title" target="_blank">${escapeHtml(result.company_name)}</a>
+                        <div class="result-snippet">${escapeHtml(result.company_name)} - Visit their official website to learn more about their products and services.</div>
+                    </div>
+                `;
+            });
+
+            resultsContainer.innerHTML = html;
+        }
+
+        function displayNoResults(query) {
+            resultsContainer.innerHTML = `
+                <div class="no-results">
+                    <div class="no-results-icon">
+                        <span class="magnifier">🔍</span>
+                    </div>
+                    <h2>Your search did not match any documents</h2>
+                    <p><strong>Need help?</strong> Take a look at other tips for searching on Google.</p>
+                    
+                    <div class="suggestions">
+                        <h3>You can also try these searches:</h3>
+                        <a href="#" class="suggestion-item" onclick="searchSuggestion('new companies'); return false;">
+                            <svg focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20">
+                                <path fill="#9aa0a6" d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"></path>
+                            </svg>
+                            new companies
+                        </a>
+                        <a href="#" class="suggestion-item" onclick="searchSuggestion('top companies'); return false;">
+                            <svg focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20">
+                                <path fill="#9aa0a6" d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"></path>
+                            </svg>
+                            top companies
+                        </a>
+                        <a href="#" class="suggestion-item" onclick="searchSuggestion('technology companies'); return false;">
+                            <svg focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20">
+                                <path fill="#9aa0a6" d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"></path>
+                            </svg>
+                            technology companies
+                        </a>
+                    </div>
+                </div>
+            `;
+        }
+
+        function searchSuggestion(term) {
+            searchInput.value = term;
+            clearBtn.classList.add('visible');
+            performSearch(term);
+        }
+
+        function extractDomain(url) {
+            try {
+                if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                    url = 'https://' + url;
+                }
+                const urlObj = new URL(url);
+                return urlObj.hostname.replace('www.', '');
+            } catch {
+                return url.replace('www.', '');
+            }
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+    </script>
+</body>
+</html>
+
