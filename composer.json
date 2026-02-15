@@ -1,0 +1,13 @@
+{
+    "name": "business-search/api",
+    "description": "Business Search API in PHP",
+    "type": "project",
+    "require": {
+        "php": ">=8.0",
+        "ext-pdo": "*",
+        "ext-pgsql": "*"
+    },
+    "autoload": {
+        "files": ["config.php"]
+    }
+}
