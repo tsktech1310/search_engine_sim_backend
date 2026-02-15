@@ -16,45 +16,22 @@ if (empty($query)) {
 try {
     $pdo = getDatabaseConnection();
     
-    // Multi-strategy search query for best results
-    // Uses exact match, starts with, contains, fuzzy search, and full-text search
+    // Simplified search query
     $sql = "
-        SELECT DISTINCT company_name, website
-        FROM (
-            -- Exact match (highest priority)
-            SELECT company_name, website, 1 as priority
-            FROM companies
-            WHERE LOWER(company_name) = LOWER(:query1)
-            
-            UNION
-            
-            -- Starts with match
-            SELECT company_name, website, 2 as priority
-            FROM companies
-            WHERE LOWER(company_name) LIKE LOWER(:query2) || '%'
-            
-            UNION
-            
-            -- Contains match
-            SELECT company_name, website, 3 as priority
-            FROM companies
-            WHERE LOWER(company_name) LIKE '%' || LOWER(:query3) || '%'
-            
-            UNION
-            
-            -- Fuzzy match using trigram similarity
-            SELECT company_name, website, 4 as priority
-            FROM companies
-            WHERE similarity(company_name, :query4) > 0.3
-            
-            UNION
-            
-            -- Full text search
-            SELECT company_name, website, 5 as priority
-            FROM companies
-            WHERE tsv @@ plainto_tsquery('english', :query5)
-        ) as results
-        ORDER BY priority, company_name
+        SELECT company_name, website
+        FROM companies
+        WHERE 
+            LOWER(company_name) = LOWER(:query1)
+            OR LOWER(company_name) LIKE LOWER(:query2) || '%'
+            OR LOWER(company_name) LIKE '%' || LOWER(:query3) || '%'
+            OR similarity(company_name, :query4) > 0.3
+        ORDER BY 
+            CASE 
+                WHEN LOWER(company_name) = LOWER(:query5) THEN 1
+                WHEN LOWER(company_name) LIKE LOWER(:query6) || '%' THEN 2
+                ELSE 3
+            END,
+            company_name
         LIMIT 20
     ";
     
@@ -64,7 +41,8 @@ try {
         ':query2' => $query,
         ':query3' => $query,
         ':query4' => $query,
-        ':query5' => $query
+        ':query5' => $query,
+        ':query6' => $query
     ]);
     
     $results = $stmt->fetchAll();
