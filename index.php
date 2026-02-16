@@ -12,7 +12,7 @@ $uri = parse_url($request_uri, PHP_URL_PATH);
 $uri = str_replace('/index.php', '', $uri);
 
 // Route the request
-if ($request_method === 'GET') {
+if ($request_method === 'GET' || $request_method === 'HEAD') {
     
     // Root endpoint - Health check
     if ($uri === '/' || $uri === '') {
